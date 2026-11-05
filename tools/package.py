@@ -23,7 +23,9 @@ def main():
             raise SystemExit('Missing release file: ' + name)
     source = [p for p in ROOT.rglob('*') if p.is_file()
               and not set(p.relative_to(ROOT).parts) &
-              {'.git','build','dist','__pycache__'}]
+              {'.git','build','dist','__pycache__'}
+              and p.suffix not in {'.aux','.log','.toc','.out','.xdv','.fls','.pyc'}
+              and not p.name.endswith(('.synctex.gz','.fdb_latexmk'))]
     manifest = {}
     for kind, paths in [('ctan',[ROOT / n for n in CTAN]),('source',source)]:
         archive = dist / ('seasonalletters-' + VERSION + '-' + kind + '.zip')
