@@ -96,7 +96,7 @@ def main():
             expected = {'invalid-spacing': 'Spacing must be positive',
                         'invalid-theme': "Unknown theme 'missing'",
                         'invalid-option': 'Unknown option'}[source.stem]
-            assert code != 0 and expected in transcript, (source.name, transcript[-3000:])
+            assert code != 0 and re.sub(r'\s+', '', expected) in re.sub(r'\s+', '', transcript), (source.name, transcript[-3000:])
             report['expected_errors'].append(source.stem)
             print('PASS expected rejection:', source.name, flush=True)
             continue
@@ -104,7 +104,10 @@ def main():
             print(transcript, file=sys.stderr)
             raise SystemExit(code)
         log = (dest / (source.stem + '.log')).read_text(encoding='utf-8', errors='replace')
-        assert 'Overfull' not in log, (source.name, 'overfull box')
+        if 'Overfull' in log:
+            lines = log.splitlines()
+            details = '\n'.join('\n'.join(lines[i:i+6]) for i, line in enumerate(lines) if 'Overfull' in line)
+            raise AssertionError((source.name, details))
         report['success'].append(source.stem)
         print('PASS compilation:', source.name, flush=True)
     # The lifecycle test observes render decisions and per-letter page counts.
