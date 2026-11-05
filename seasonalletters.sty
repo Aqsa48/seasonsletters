@@ -1,0 +1,276 @@
+%% seasonalletters.sty -- configurable decorative stationery
+%% Copyright (c) 2026 aqsa <aqsa.umar3505@gmail.com>
+%% Distributed under the MIT License; see LICENSE.
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\ProvidesPackage{seasonalletters}[2026/11/05 v0.1.0 Seasonal letter stationery]
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+\RequirePackage{etoolbox}
+\usetikzlibrary{calc,shapes.geometric}
+\newif\ifsl@enabled \sl@enabledtrue
+\newif\ifsl@print \sl@printfalse
+\newif\ifsl@document \sl@documentfalse
+\newif\ifsl@full
+\newif\ifsl@debug \sl@debugfalse
+\newcount\sl@page
+\def\sl@season{spring}\def\sl@weekday{monday}\def\sl@day{1}
+\def\sl@paper{plain}\def\sl@continuation{light}
+\def\sl@border{double}\def\sl@label{}\def\sl@image{}
+\def\sl@imageopacity{0.12}\def\sl@spacing{8mm}
+\def\sl@left{30mm}\def\sl@right{30mm}
+\def\sl@top{45mm}\def\sl@bottom{35mm}
+\def\sl@cornerwidth{18mm}\def\sl@cornerimage{}
+\def\sl@customart{}
+\def\sl@palette#1#2#3#4{%
+  \definecolor{slPaper}{HTML}{#1}%
+  \definecolor{slAccent}{HTML}{#2}%
+  \definecolor{slMuted}{HTML}{#3}%
+  \definecolor{slInk}{HTML}{#4}}
+\sl@palette{FAF5E9}{7B5260}{73816A}{302C29}
+\pgfkeys{/seasonalletters/.is family,/seasonalletters,
+  season/.is choice,
+  season/spring/.code={\def\sl@season{spring}\sl@palette{FAF5E9}{7B5260}{73816A}{302C29}},
+  season/summer/.code={\def\sl@season{summer}\sl@palette{FCF5E3}{9B702F}{7C8760}{302C26}},
+  season/autumn/.code={\def\sl@season{autumn}\sl@palette{F4EBDD}{946044}{7B7358}{352D27}},
+  season/winter/.code={\def\sl@season{winter}\sl@palette{F4F3EE}{435D72}{8E907D}{29333B}},
+  weekday/.is choice,
+  weekday/monday/.code={\def\sl@weekday{monday}\def\sl@day{1}},
+  weekday/tuesday/.code={\def\sl@weekday{tuesday}\def\sl@day{2}},
+  weekday/wednesday/.code={\def\sl@weekday{wednesday}\def\sl@day{3}},
+  weekday/thursday/.code={\def\sl@weekday{thursday}\def\sl@day{4}},
+  weekday/friday/.code={\def\sl@weekday{friday}\def\sl@day{5}},
+  weekday/saturday/.code={\def\sl@weekday{saturday}\def\sl@day{6}},
+  weekday/sunday/.code={\def\sl@weekday{sunday}\def\sl@day{7}},
+  paper/.is choice,
+  paper/plain/.code={\def\sl@paper{plain}},
+  paper/ruled/.code={\def\sl@paper{ruled}},
+  paper/grid/.code={\def\sl@paper{grid}},
+  continuation/.is choice,
+  continuation/light/.code={\def\sl@continuation{light}},
+  continuation/full/.code={\def\sl@continuation{full}},
+  continuation/none/.code={\def\sl@continuation{none}},
+  border/.is choice,
+  border/double/.code={\def\sl@border{double}},
+  border/single/.code={\def\sl@border{single}},
+  border/none/.code={\def\sl@border{none}},
+  output/.is choice,
+  output/screen/.code={\sl@printfalse},
+  output/print/.code={\sl@printtrue},
+  enabled/.is choice,
+  enabled/true/.code={\sl@enabledtrue},
+  enabled/false/.code={\sl@enabledfalse},
+  debug/.is choice,
+  debug/true/.code={\sl@debugtrue},
+  debug/false/.code={\sl@debugfalse},
+  label/.store in=\sl@label,
+  spacing/.store in=\sl@spacing,
+  left/.store in=\sl@left,right/.store in=\sl@right,
+  top/.store in=\sl@top,bottom/.store in=\sl@bottom,
+  background-image/.store in=\sl@image,
+  background-opacity/.store in=\sl@imageopacity,
+  corner-image/.store in=\sl@cornerimage,
+  corner-width/.store in=\sl@cornerwidth,
+  accent/.code={\colorlet{slAccent}{#1}},
+  paper-color/.code={\colorlet{slPaper}{#1}},
+  ink/.code={\colorlet{slInk}{#1}},
+  muted/.code={\colorlet{slMuted}{#1}},
+  theme/.code={\ifcsdef{sl@theme@#1}{\csuse{sl@theme@#1}}{%
+    \PackageError{seasonalletters}{Unknown theme '#1'}{Define it with \string\SeasonalDeclareTheme.}}},
+  .unknown/.code={\PackageError{seasonalletters}{Unknown option '\pgfkeyscurrentname'}{See the package manual for supported keys.}}
+}
+\def\sl@option#1{\pgfkeys{/seasonalletters,#1}}
+\DeclareOption*{\expandafter\sl@option\expandafter{\CurrentOption}}
+\ProcessOptions\relax
+\AtBeginDocument{\sl@documenttrue}
+\newcommand\SeasonalSetup[1]{%
+  \ifsl@document\clearpage\fi
+  \pgfkeys{/seasonalletters,#1}}
+\newcommand\SeasonalDeclareTheme[2]{\csdef{sl@theme@#1}{\pgfkeys{/seasonalletters,#2}}}
+\newcommand\SeasonalSetArtwork[1]{%
+  \ifsl@document\clearpage\fi\def\sl@customart{#1}}
+\newcommand\SeasonalReset{\ifsl@document\clearpage\fi\global\sl@page=0\relax}
+\newcommand\SeasonalHeading[1]{%
+  \par\noindent{\color{slAccent}\Large\scshape #1}\par\vspace{1.3em}}
+\newcommand\SeasonalOpening[1]{\par\noindent #1\par\vspace{0.6em}}
+\newcommand\SeasonalClosing[2]{\par\vspace{1.2em}\noindent #1\par\vspace{1.5em}\noindent #2\par}
+\newenvironment{SeasonalLetter}[1][]{%
+  \clearpage\begingroup
+  \pgfkeys{/seasonalletters,enabled=true,#1}%
+  \global\sl@page=0\relax\color{slInk}%
+}{\par\clearpage\endgroup}
+% Original vector motifs. Local coordinates are millimetres.
+\def\sl@sprig{%
+  \draw[slMuted,line width=.45pt] (0,0) .. controls (3,9) and (8,20) .. (5,33);
+  \foreach \y/\r in {5/25,12/-25,19/25,26/-25}{%
+    \begin{scope}[shift={(4,\y)},rotate=\r]
+      \draw[slMuted,fill=slMuted!18,line width=.3pt]
+        (0,0) .. controls (-6,1) and (-7,5) .. (-6,7)
+        .. controls (-1,6) and (0,3) .. (0,0);
+      \draw[slMuted,line width=.2pt] (0,0)--(-5,6);
+    \end{scope}}
+  \foreach \x/\y in {5/33,2/21,5/10}{%
+    \begin{scope}[shift={(\x,\y)}]
+      \foreach \a in {0,72,144,216,288}{%
+        \draw[slAccent!85,fill=slAccent!13,line width=.25pt,rotate=\a]
+          (0,0) .. controls (-2,1) and (-2,3) .. (0,3.3)
+          .. controls (2,3) and (2,1) .. (0,0);}
+      \fill[slAccent] (0,0) circle (.55);
+    \end{scope}}}
+\def\sl@summer{%
+  \draw[slMuted,line width=.4pt] (0,0) .. controls (7,11) and (1,23) .. (6,32);
+  \foreach \x/\y in {3/8,3/18,6/30}{%
+    \begin{scope}[shift={(\x,\y)}]
+      \foreach \a in {0,45,...,315}
+        \draw[slAccent,fill=slPaper,line width=.25pt,rotate=\a]
+          (0,0) ellipse (.6 and 2.5);
+      \fill[slAccent!80] (0,0) circle (1);
+    \end{scope}}
+  \foreach \y in {4,13,22}
+    \draw[slMuted,line width=.35pt] (3,\y) .. controls (8,\y+2) .. (9,\y+6)
+      .. controls (4,\y+5) .. (3,\y);}
+\def\sl@autumn{%
+  \draw[slMuted,line width=.45pt] (0,0) .. controls (5,13) and (3,21) .. (6,34);
+  \foreach \y/\r in {5/15,15/-35,25/25}{%
+    \begin{scope}[shift={(4,\y)},rotate=\r]
+      \draw[slAccent,fill=slAccent!12,line width=.3pt]
+        (0,0)--(-4,2)--(-3,4)--(-6,5)--(-4,7)--(-5,9)--(-2,9)--(0,12)
+        --(2,9)--(5,9)--(4,7)--(6,5)--(3,4)--(4,2)--cycle;
+      \draw[slMuted,line width=.25pt] (0,-2)--(0,10);
+    \end{scope}}}
+\def\sl@winter{%
+  \draw[slAccent,line width=.5pt] (0,0) .. controls (4,12) and (3,24) .. (7,35);
+  \foreach \y in {6,14,22,29}{%
+    \draw[slAccent,line width=.3pt] (4,\y)--(-3,\y+7) (-1,\y+5)--(-1,\y+8)
+      (4,\y)--(11,\y+5) (8,\y+3)--(11,\y+2);
+    \fill[slMuted] (11,\y+5) circle (.45);}
+  \foreach \x/\y in {-4/19,11/14,0/32}
+    \node[star,star points=4,star point ratio=3,fill=slMuted,
+      inner sep=.7pt] at (\x,\y) {};}
+\def\sl@motif{\csuse{sl@\sl@season}}
+\let\sl@spring\sl@sprig
+\def\sl@emblem{%
+  \ifcase\sl@day\relax\or
+    \draw[slAccent,line width=.5pt] (0,0) circle (2.7);
+    \fill[slPaper] (1.5,1) circle (2.5);
+  \or
+    \draw[slAccent,line width=.45pt] (0,-3)--(0,3) (-3,0)--(3,0);
+    \draw[slAccent,fill=slAccent!12] (0,3)--(2,0)--(0,-3)--(-2,0)--cycle;
+  \or
+    \draw[slAccent,line width=.45pt] (-3,-2.5) rectangle (3,2.5);
+    \draw[slAccent,line width=.3pt] (-1,-2.5)--(-1,2.5) (1,-2.5)--(1,2.5)
+      (-3,-.8)--(3,-.8) (-3,.8)--(3,.8);
+  \or
+    \draw[slAccent,line width=.4pt] (0,-3)--(0,3);
+    \foreach \y in {-2,0,2}
+      \draw[slAccent] (0,\y) .. controls (-3,\y) .. (-2,\y+2)
+        (0,\y) .. controls (3,\y) .. (2,\y+2);
+  \or
+    \node[star,star points=5,star point ratio=2.5,draw=slAccent,
+      fill=slAccent!15,minimum size=6mm,inner sep=0pt] at (0,0) {};
+  \or
+    \draw[slAccent,line width=.4pt] (0,0) circle (2.5);
+    \draw[slAccent,fill=slAccent!15] (0,4)--(1,0)--(0,-4)--(-1,0)--cycle;
+    \draw[slAccent] (-4,0)--(4,0);
+  \or
+    \draw[slAccent,line width=.45pt] (0,0) circle (1.7);
+    \foreach \a in {0,30,...,330}
+      \draw[slAccent,line width=.4pt] (\a:2.3)--(\a:3.5);
+  \fi}
+\def\sl@validate{%
+  \ifdim\sl@spacing>0pt\else
+    \PackageError{seasonalletters}{Spacing must be positive}{Use, for example, spacing=8mm.}%
+    \def\sl@spacing{8mm}%
+  \fi
+  \ifdim\dimexpr\paperwidth-\sl@left-\sl@right\relax>0pt\else
+    \PackageError{seasonalletters}{Writing rectangle has no width}{Reduce left and right insets.}%
+  \fi
+  \ifdim\dimexpr\paperheight-\sl@top-\sl@bottom\relax>0pt\else
+    \PackageError{seasonalletters}{Writing rectangle has no height}{Reduce top and bottom insets.}%
+  \fi}
+\def\sl@render{%
+  \ifsl@enabled
+    \sl@validate\global\advance\sl@page by1
+    \begingroup
+    \sl@fullfalse
+    \ifnum\sl@page=1 \sl@fulltrue\fi
+    \ifdefstring{\sl@continuation}{full}{\sl@fulltrue}{}%
+    \ifsl@print
+      \colorlet{slPaper}{white}\colorlet{slAccent}{black!65}\colorlet{slMuted}{black!45}%
+    \fi
+    \begin{tikzpicture}[remember picture,overlay,x=1mm,y=1mm]
+      \fill[slPaper] (current page.south west) rectangle (current page.north east);
+      \ifsl@print\else
+        \ifdefempty{\sl@image}{}{%
+          \node[inner sep=0pt,opacity=\sl@imageopacity] at (current page.center)
+            {\includegraphics[width=\paperwidth,height=\paperheight]{\sl@image}};}
+      \fi
+      \coordinate (slNW) at ([xshift=\sl@left,yshift=-\sl@top]current page.north west);
+      \coordinate (slSE) at ([xshift=-\sl@right,yshift=\sl@bottom]current page.south east);
+      % Rules are clipped to the declared writing rectangle.
+      \ifsl@print\else
+        \begin{scope}
+          \clip (slNW) rectangle (slSE);
+          \ifdefstring{\sl@paper}{plain}{}{%
+            \pgfmathtruncatemacro{\sl@rows}{(\paperheight-\sl@top-\sl@bottom)/\sl@spacing}
+            \foreach \r in {1,...,\sl@rows}{%
+              \draw[slMuted!17,line width=.2pt]
+                ([yshift=-\r*\sl@spacing]slNW)--([yshift=-\r*\sl@spacing]slNW -| slSE);}
+            %
+            \ifdefstring{\sl@paper}{grid}{%
+              \pgfmathtruncatemacro{\sl@cols}{(\paperwidth-\sl@left-\sl@right)/\sl@spacing}
+              \foreach \c in {1,...,\sl@cols}{%
+                \draw[slMuted!17,line width=.2pt]
+                  ([xshift=\c*\sl@spacing]slNW)--([xshift=\c*\sl@spacing]slNW |- slSE);}
+              % 
+            }{}}
+        \end{scope}
+      \fi
+      \def\sl@drawdecor{1}%
+      \ifnum\sl@page>1
+        \ifdefstring{\sl@continuation}{none}{\def\sl@drawdecor{0}}{}%
+      \fi
+      \ifnum\sl@drawdecor=1
+        \ifdefstring{\sl@border}{none}{}{%
+          \draw[slAccent!65,line width=.35pt]
+            ([xshift=11mm,yshift=11mm]current page.south west)
+            rectangle ([xshift=-11mm,yshift=-11mm]current page.north east);
+          \ifdefstring{\sl@border}{double}{%
+            \draw[slAccent!35,line width=.2pt]
+              ([xshift=13mm,yshift=13mm]current page.south west)
+              rectangle ([xshift=-13mm,yshift=-13mm]current page.north east);
+          }{}}
+        \ifsl@full
+          \begin{scope}[shift={([xshift=18mm,yshift=19mm]current page.south west)}]
+            \sl@motif
+          \end{scope}
+          \begin{scope}[shift={([xshift=-18mm,yshift=-19mm]current page.north east)},rotate=180]
+            \sl@motif
+          \end{scope}
+          \begin{scope}[shift={([yshift=-24mm]current page.north)}]
+            \draw[slAccent!50,line width=.3pt] (-25,0)--(-8,0) (8,0)--(25,0);
+            \sl@emblem
+          \end{scope}
+          \ifdefempty{\sl@label}{}{%
+            \node[text=slAccent,font=\normalfont\small\scshape,inner sep=0pt]
+              at ([yshift=-35mm]current page.north) {\sl@label};}
+          \ifdefempty{\sl@cornerimage}{}{%
+            \node[anchor=south east,inner sep=0pt]
+              at ([xshift=-16mm,yshift=16mm]current page.south east)
+              {\includegraphics[width=\sl@cornerwidth]{\sl@cornerimage}};}
+          \sl@customart
+        \else
+          \begin{scope}[shift={([yshift=-22mm]current page.north)},scale=.7]
+            \sl@emblem
+          \end{scope}
+        \fi
+        \node[text=slAccent!70,font=\normalfont\scriptsize,inner sep=0pt]
+          at ([yshift=19mm]current page.south) {\the\sl@page};
+      \fi
+      \ifsl@debug
+        \draw[red,dashed,line width=.4pt] (slNW) rectangle (slSE);
+      \fi
+    \end{tikzpicture}%
+    \endgroup
+  \fi}
+\AddToHook{shipout/background}[seasonalletters]{\sl@render}
+\endinput

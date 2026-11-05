@@ -1,0 +1,29 @@
+{
+  "engine": "tectonic",
+  "success": [
+    "seasonalletters-doc",
+    "seasonalletters-gallery",
+    "seasonalletters-example",
+    "seasonalletters-print",
+    "seasonalletters-standard",
+    "artwork",
+    "flow",
+    "lifecycle",
+    "matrix"
+  ],
+  "expected_errors": [
+    "invalid-option",
+    "invalid-spacing",
+    "invalid-theme"
+  ],
+  "pages": {
+    "seasonalletters-gallery": 7,
+    "seasonalletters-example": 2,
+    "seasonalletters-print": 1,
+    "seasonalletters-standard": 1,
+    "matrix": 28,
+    "lifecycle": 7,
+    "flow": 3,
+    "artwork": 2
+  }
+}

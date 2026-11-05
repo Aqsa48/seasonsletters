@@ -1,0 +1,21 @@
+\documentclass[a5paper]{seasonalletter}
+\newcommand\sample[4]{%
+\begin{SeasonalLetter}[season=#1,weekday=#2,paper=#3,label={#2 / #1}]
+\SeasonalHeading{#4}
+\SeasonalOpening{My dear friend,}
+There is always a little room in the day for a letter.
+This page keeps the ornament at the edges and leaves the words in the light.
+
+The season chooses the colours and botanical motif. The weekday supplies its
+own small emblem. These choices can be combined freely.
+\SeasonalClosing{With affection,}{A.}
+\end{SeasonalLetter}}
+\begin{document}
+\sample{spring}{monday}{plain}{Moonlit garden}
+\sample{summer}{tuesday}{ruled}{The summer cabinet}
+\sample{autumn}{wednesday}{grid}{Notes from the archive}
+\sample{spring}{thursday}{plain}{The herbarium}
+\sample{winter}{friday}{plain}{A winter evening}
+\sample{autumn}{saturday}{ruled}{The traveller's journal}
+\sample{summer}{sunday}{plain}{Letters in sunlight}
+\end{document}

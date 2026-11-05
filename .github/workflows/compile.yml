@@ -1,0 +1,25 @@
+name: Compile and verify
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  latex:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [pdflatex, xelatex, lualatex]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install TeX dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-xetex texlive-luatex
+          python -m pip install pypdf pdfplumber
+      - name: Compile examples and regression cases
+        run: python tools/build.py --engine ${{ matrix.engine }}
+      - name: Prepare release archives
+        run: python tools/package.py

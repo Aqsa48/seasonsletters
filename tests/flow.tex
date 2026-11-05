@@ -1,0 +1,17 @@
+\documentclass[a4paper]{seasonalletter}
+\begin{document}
+\begin{SeasonalLetter}[season=summer,weekday=sunday]
+\SeasonalOpening{Dear reader,}
+\newcount\paragraphnumber
+\paragraphnumber=1
+\loop
+Paragraph \the\paragraphnumber. A letter should be able to grow at its own pace.
+These words are ordinary paragraphs in the main vertical list. The writer does
+not need to count lines or reserve a box of a particular height. When the page
+is full, the next part of the letter moves to a quieter continuation sheet.
+The margin ornaments stay behind the text.\par
+\advance\paragraphnumber by1
+\ifnum\paragraphnumber<25\repeat
+\SeasonalClosing{The final words remain visible.}{End of flow test}
+\end{SeasonalLetter}
+\end{document}

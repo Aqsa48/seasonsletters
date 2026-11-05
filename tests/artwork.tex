@@ -1,0 +1,9 @@
+\documentclass[a5paper]{seasonalletter}
+\SeasonalSetup{background-image=tests/test-art.png,background-opacity=.1,
+  corner-image=tests/test-art.png,corner-width=12mm}
+\SeasonalSetArtwork{\draw[slAccent] ([xshift=17mm,yshift=-17mm]current page.north west) circle (2mm);}
+\begin{document}
+\begin{SeasonalLetter}Custom image and vector layers.\end{SeasonalLetter}
+\SeasonalSetArtwork{}
+\begin{SeasonalLetter}[output=print]Print omits the background image.\end{SeasonalLetter}
+\end{document}

@@ -1,0 +1,11 @@
+build/
+dist/
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.xdv
+__pycache__/

@@ -1,0 +1,27 @@
+\documentclass[a4paper]{seasonalletter}
+\SeasonalSetup{enabled=false}
+\makeatletter
+\AddToHook{shipout/after}{%
+  \ifsl@enabled
+    \def\sl@test{light}%
+    \ifnum\sl@page=1 \def\sl@test{full}\fi
+    \ifdefstring{\sl@continuation}{full}{\def\sl@test{full}}{}%
+    \ifnum\sl@page>1
+      \ifdefstring{\sl@continuation}{none}{\def\sl@test{none}}{}%
+    \fi
+  \else\def\sl@test{disabled}\fi
+  \typeout{SLTEST:\the\sl@page:\sl@season:\sl@test}}
+\makeatother
+\SeasonalDeclareTheme{cold}{season=winter,weekday=friday,continuation=none}
+\begin{document}
+\begin{SeasonalLetter}[season=spring]
+First letter, first page.\newpage First letter, continuation.
+\end{SeasonalLetter}
+\begin{SeasonalLetter}[theme=cold]
+Second letter, first page.\newpage Second letter, bare continuation.
+\end{SeasonalLetter}
+This page has no stationery.\clearpage
+\SeasonalSetup{enabled=true,continuation=full}
+\SeasonalReset
+Third letter, first page.\newpage Third letter, full continuation.
+\end{document}

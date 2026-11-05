@@ -1,0 +1,250 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=25mm]{geometry}
+\usepackage{array,booktabs,longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue!50!black,
+ pdftitle={Seasonal Letters: user manual},pdfauthor={aqsa}}
+\definecolor{codebg}{HTML}{F5F3EE}
+\lstset{basicstyle=\ttfamily\small,backgroundcolor=\color{codebg},
+ columns=fullflexible,keepspaces=true,breaklines=true,frame=single,
+ rulecolor=\color{black!15},xleftmargin=3pt,xrightmargin=3pt}
+\setlength{\emergencystretch}{2em}\setlength{\parindent}{0pt}\setlength{\parskip}{.65em}
+\newcommand\key[1]{\texttt{#1}}
+\title{Seasonal Letters\\\large Configurable decorative stationery for LaTeX}
+\author{aqsa\\\small\href{mailto:aqsa.umar3505@gmail.com}{aqsa.umar3505@gmail.com}}
+\date{Version 0.1.0\quad 5 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Seasonal Letters places decorative stationery behind ordinary LaTeX text.
+Four seasonal palettes and botanical motifs can be combined with seven weekday
+emblems. The package distinguishes first and continuation pages, supports
+custom artwork, and provides a white-paper print mode. All built-in decoration
+is original vector artwork; no external images, proprietary fonts, or shell
+escape are required. The optional \key{seasonalletter} class provides a
+simple personal-letter layout.
+\end{abstract}
+\tableofcontents
+\section{What this package does}
+The package handles page decoration. It does not replace address management,
+postal standards, or the letter structures in existing classes. Use the
+optional class for informal correspondence, or load the package with an
+existing class and keep that class's letter commands.
+
+The writing area is kept visually quiet. Page backgrounds are independent of
+paragraphs, and decoration does not require a fixed-height text box. Text can
+flow naturally over several pages. Seasonal and weekday choices are explicit:
+the package does not infer a season from the date, location, or hemisphere.
+
+This release draws clean antique-inspired line art. It does not include the
+painterly artwork or photographic paper textures shown in early concept images.
+A user-supplied texture can be added as described below.
+\section{Requirements and installation}
+A LaTeX format dated 2020-10-01 or later is required for the shipout hook.
+Runtime dependencies are TikZ/PGF, \key{graphicx}, and \key{etoolbox}.
+The optional class also loads \key{geometry}, \key{fontenc}, and
+\key{mathpazo}. The manual uses \key{listings}, \key{booktabs},
+\key{longtable}, and \key{hyperref}. These are standard TeX distribution
+packages. No system font installation is needed.
+
+For a local project, copy \key{seasonalletters.sty} and, if needed,
+\key{seasonalletter.cls} beside your document. For a personal installation,
+put both files in \path{TEXMFHOME/tex/latex/seasonalletters/} and refresh the
+file database if your distribution requires it. The files can also be uploaded
+alongside the example to an Overleaf project; there is no special Overleaf API.
+
+Compile with pdfLaTeX, XeLaTeX, or LuaLaTeX. TikZ page anchors may require a
+second run. For example:
+\begin{lstlisting}
+pdflatex seasonalletters-example.tex
+pdflatex seasonalletters-example.tex
+\end{lstlisting}
+\section{A first letter}
+\begin{lstlisting}
+\documentclass[a4paper]{seasonalletter}
+\SeasonalSetup{season=autumn,weekday=wednesday,
+  paper=grid,label={From the reading room}}
+\begin{document}
+\begin{SeasonalLetter}
+\SeasonalHeading{A quiet afternoon}
+\SeasonalOpening{Dear friend,}
+The words of the letter go here. Paragraphs and page
+breaks work as in an ordinary LaTeX document.
+\SeasonalClosing{With warm wishes,}{Alex}
+\end{SeasonalLetter}
+\end{document}
+\end{lstlisting}
+The class uses 30\,mm side margins, a 45\,mm top margin, and a 35\,mm bottom
+margin. It sets Palatino text, an empty page style, no paragraph indentation,
+and modest paragraph spacing. Standard \key{article} options, including
+\key{a4paper}, \key{a5paper}, and \key{letterpaper}, are passed through.
+The default paper size follows the base class/distribution setting, so specify
+one explicitly for reproducible output.
+\section{Commands and page boundaries}
+\begin{description}
+\item[\texttt{\string\SeasonalSetup\{keys\}}]
+Sets package options. In the document body it first calls
+\texttt{\string\clearpage}, so new settings cannot change the decoration of
+an unfinished page. In the preamble it does not ship a page.
+Keys can also be passed directly to \texttt{\string\usepackage}.
+\item[\texttt{SeasonalLetter} environment]
+Begins on a fresh page, enables decoration, applies its optional keys locally,
+and resets its own page count. Its end ships remaining pages before the local
+settings are restored. It may contain any number of paragraphs and pages.
+It does not collect the body into a box. Do not nest these environments.
+\item[\texttt{\string\SeasonalReset}]
+Ships an unfinished page and resets the stationery page count. Use it before
+each new letter when working with another class. It does not change LaTeX's
+\key{page} counter.
+\item[\texttt{\string\SeasonalHeading\{text\}}]
+Typesets an accent-colour, large small-cap heading.
+\item[\texttt{\string\SeasonalOpening\{greeting\}}]
+Typesets a greeting followed by a small gap.
+\item[\texttt{\string\SeasonalClosing\{closing\}\{signature\}}]
+Typesets a closing and signature with space between them.
+\end{description}
+\section{Options}
+Keys are processed from left to right. A \key{season} sets the palette;
+place colour overrides after it.
+\begin{longtable}{@{}p{.27\linewidth}p{.65\linewidth}@{}}
+\toprule Key & Values and behaviour\\\midrule\endhead
+\key{season} & \key{spring} (default), \key{summer}, \key{autumn}, \key{winter}. Sets colours and botanical corner motif.\\
+\key{weekday} & \key{monday} (default) through \key{sunday}, in lower case. Selects an emblem. No automatic date calculation.\\
+\key{paper} & \key{plain} (default), \key{ruled}, \key{grid}. Lines are clipped to the declared writing rectangle.\\
+\key{spacing} & Positive TeX dimension; default \key{8mm}. Distance between rule or grid lines. Lines do not snap to text baselines.\\
+\key{border} & \key{double} (default), \key{single}, \key{none}. Changes the border, not the motifs.\\
+\key{continuation} & \key{light} (default): border, small emblem, page count. \key{full}: full decoration on every page. \key{none}: no decoration or stationery page count after the first page. Paper colour and ruling remain.\\
+\key{output} & \key{screen} (default), \key{print}. Print uses white paper and grey built-in decoration; omits background images and ruling. User artwork remains the user's responsibility. Body text is not recoloured.\\
+\key{enabled} & \key{true} (default), \key{false}. Disabled pages have no package background and do not advance its page count.\\
+\key{label} & Optional text beneath the first-page emblem; empty by default. Keep it short. Full continuation repeats it.\\
+\key{accent}, \key{muted} & Valid xcolor expressions for ornament colours.\\
+\key{paper-color}, \key{ink} & Valid xcolor expressions. Ink affects the provided environment and heading commands; the package does not globally recolour existing-class text.\\
+\key{left}, \key{right} & Guide/ruling insets, default \key{30mm}. These do not change document margins.\\
+\key{top}, \key{bottom} & Guide/ruling insets, defaults \key{45mm} and \key{35mm}. These do not change document margins.\\
+\key{debug} & \key{true} draws a red guide rectangle; \key{false} (default) hides it.\\
+\key{background-image} & Image filename, empty by default. Stretched to the page, so use artwork with the same aspect ratio. Omitted in print mode.\\
+\key{background-opacity} & Number between 0 and 1; default \key{0.12}. Applies only to the background image.\\
+\key{corner-image} & Image filename, empty by default. Placed 16\,mm from the bottom and right paper edges, on fully decorated pages.\\
+\key{corner-width} & Positive width for that image; default \key{18mm}. Keep the artwork outside the writing area.\\
+\key{theme} & Name previously declared with \texttt{\string\SeasonalDeclareTheme}.\\
+\bottomrule
+\end{longtable}
+\section{The visual system}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Season & Palette & Motif\\\midrule
+Spring & Ivory, dusty rose, sage & Flowering sprig\\
+Summer & Cream, ochre, olive & Meadow flowers\\
+Autumn & Warm beige, rust, muted olive & Stylised leaves\\
+Winter & Cool ivory, blue-grey & Bare branches and small stars\\\bottomrule
+\end{tabular}\end{center}
+Monday has a crescent; Tuesday a diamond; Wednesday a grid; Thursday a sprig;
+Friday a star; Saturday a compass; Sunday a sun. These are design choices, not
+claims of historical or cultural meaning. The weekday is independent of the
+season. All 28 combinations use the same text layout.
+\section{Defining themes and adding artwork}
+A theme stores a sequence of existing settings:
+\begin{lstlisting}
+\SeasonalDeclareTheme{reading-room}{
+  season=autumn,weekday=wednesday,paper=grid,
+  border=single,accent=brown!70!black}
+\SeasonalSetup{theme=reading-room}
+\end{lstlisting}
+A photographic paper texture can be supplied separately:
+\begin{lstlisting}
+\SeasonalSetup{background-image=my-paper.jpg,
+  background-opacity=.18}
+\end{lstlisting}
+There is no bundled image file. Use assets that you are entitled to distribute
+if you share your theme, and include their licence and source information.
+PDF, PNG, and JPEG work with normal PDF-producing engines. Convert SVG artwork
+to PDF first if you want a vector image without a shell-escape conversion.
+
+For more control, \texttt{\string\SeasonalSetArtwork\{TikZ code\}} sets an
+additional layer on fully decorated pages. It replaces the previous custom
+layer and does not replace the built-in motifs. Pass an empty argument to clear
+it. The code runs inside the background TikZ picture; the ordinary TikZ page
+anchors are available. For example:
+\begin{lstlisting}
+\SeasonalSetArtwork{
+  \node[anchor=south east,inner sep=0pt]
+    at ([xshift=-17mm,yshift=17mm]
+        current page.south east)
+    {\includegraphics[width=16mm]{my-ornament.pdf}};
+}
+\end{lstlisting}
+The command ships an unfinished page before changing its definition. Do not
+start another \key{tikzpicture} inside this code. User-supplied artwork is not
+automatically clipped, desaturated, or checked for overlap. Keep it small,
+confine it to the margins, and review the final PDF.
+\section{Using another letter class}
+For postal letters, keep the address, fold-mark, and opening commands of your
+chosen class. The package does not change their positions. This example uses
+the standard \key{letter} class:
+\begin{lstlisting}
+\documentclass[a4paper]{letter}
+\usepackage[left=30mm,right=30mm,
+  top=45mm,bottom=35mm]{geometry}
+\usepackage[season=winter,weekday=friday]{seasonalletters}
+\signature{Alex}
+\begin{document}
+\SeasonalReset
+\begin{letter}{Morgan\\12 Example Street}
+\opening{Dear Morgan,}
+The body of the letter goes here.
+\closing{Best wishes,}
+\end{letter}
+\end{document}
+\end{lstlisting}
+For KOMA-Script or another class, make sufficient room for its own address and
+heading areas and inspect the result. The package intentionally does not
+reconfigure another class's geometry. The \key{left}, \key{right}, \key{top},
+and \key{bottom} keys describe the ruling/guide rectangle only. If you change
+the optional class's geometry, update those guide keys to match it.
+
+The package uses physical page edges for decoration. It does not mirror inner
+and outer margins for duplex binding or support crop/bleed production. This
+release is intended for A4, A5, and US Letter portrait sheets. Other sizes and
+landscape pages require visual review.
+\section{Printing, accessibility, and limitations}
+Choose \key{output=print} when printing on actual textured stock or when a
+full-page colour fill is unwanted. Thin borders are inset 11\,mm from the
+paper edge, but printer capabilities vary. Use \key{border=none} to suppress
+them. Print mode is a visual setting, not a separate PDF print layer.
+
+Body text remains selectable and searchable. This release has not been
+validated for tagged PDF or PDF/UA; selectable text alone is not an
+accessibility certification. Decorative content is inserted in the LaTeX
+\key{shipout/background} hook. Avoid combining this package with another
+opaque full-page background unless you have checked hook ordering.
+
+No automatic font changes are made by the package itself. The optional class
+uses Palatino. Users who need other scripts should choose an appropriate font
+and engine in their own document; multilingual typography is not configured
+by this package.
+\section{Building and reporting problems}
+Build the manual twice with a PDF-producing LaTeX engine. Build the gallery,
+example, print example, and standard-letter example the same way. The
+repository includes a Python build/verification script and GitHub Actions
+configuration. See \key{README.md} for commands and \key{VALIDATION.md} for
+the actual release checks.
+
+Report the engine and LaTeX format version, package version, full error message,
+and a minimal example to the maintainer. The submission metadata is a separate
+release-preparation document; it does not imply that CTAN has accepted the
+package or that a distribution already includes it.
+\section{Licence and file manifest}
+Copyright (c) 2026 aqsa. The package, class, original vector motifs, examples,
+manual source, build scripts, and repository documentation are distributed
+under the MIT License in \key{LICENSE}. Dependencies keep their own licences.
+No third-party artwork or fonts are bundled.
+
+Runtime: \key{seasonalletters.sty}, \key{seasonalletter.cls}. Documentation:
+this manual and its source, \key{README.md}, \key{CHANGELOG.md},
+\key{LICENSE}, \key{MANIFEST.md}. Examples have the
+\key{seasonalletters-} prefix. Development files are listed in the repository
+manifest and excluded from the CTAN archive when not needed by users.
+\end{document}

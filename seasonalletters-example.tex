@@ -1,0 +1,37 @@
+\documentclass[a4paper]{seasonalletter}
+\SeasonalSetup{season=autumn,weekday=wednesday,paper=grid,
+  label={A letter from the reading room}}
+\begin{document}
+\begin{SeasonalLetter}
+\SeasonalHeading{The quiet art of keeping in touch}
+\hfill 5 November 2026\par
+\SeasonalOpening{Dear friend,}
+A letter gives a small part of the day somewhere to stay. This page is a working
+LaTeX document: its words remain selectable, its paragraphs break naturally,
+and its decoration is drawn as vector artwork behind the text.
+
+The grid is deliberately quiet. Its lines belong to the page, so they remain
+in place as the letter grows. The oak leaves stay in the margin, leaving the
+centre clear for reading.
+
+This afternoon the light reached the edge of the desk and stopped beside an
+unfinished book. I thought you would have liked the silence of that moment.
+There was nothing urgent to report, which seemed a good reason to write.
+\SeasonalClosing{With warm wishes,}{A fellow reader}
+\newpage
+\SeasonalHeading{A little more room}
+This is the continuation of the same letter. The package keeps the border and
+a small weekday emblem, while leaving out the large corner motifs and label.
+The page number belongs to this letter and does not depend on the document's
+printed page counter.
+
+For an undecorated continuation, choose \texttt{continuation=none}. For the
+same ornament on every page, choose \texttt{continuation=full}. The paper
+colour and optional ruling continue in either case.
+
+The end of a letter should have as much room as its beginning. A quiet second
+page makes that possible without requiring the writer to position paragraphs
+by hand.
+\SeasonalClosing{Until next time,}{A fellow reader}
+\end{SeasonalLetter}
+\end{document}
