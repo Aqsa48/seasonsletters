@@ -34,13 +34,11 @@ natural-flow pages. These were inspected for clipping, overlap, readability,
 page numbering and continuation behaviour. The preview image is composed
 from the actual gallery renders.
 
-## Checks not yet run
+## GitHub Actions
 
-The GitHub workflow is configured for pdfLaTeX, XeLaTeX and LuaLaTeX on Linux,
-and will run on publication to the GitHub repository.
-Separate native pdfLaTeX and LuaLaTeX builds have not been run locally. There
-is no claim of tagged-PDF/PDF-UA validation, physical printer testing, or
-automatic compatibility with arbitrary letter-class geometry.
+The full build and verification suite passed with pdfLaTeX, XeLaTeX, and
+LuaLaTeX on Linux. See the [successful workflow run](https://github.com/Aqsa48/seasonsletters/actions/runs/42068058256).
+Physical printer testing and tagged PDF validation remain outside these checks.
 
 ## Name and publication status
 
@@ -49,6 +47,5 @@ GitHub repository-name search returned no matching repository. These checks do
 not reserve the name or establish novelty. CTAN remains responsible for its
 acceptance and catalogue naming decisions.
 
-The source is being published at https://github.com/Aqsa48/seasonsletters.
-No CTAN submission has been sent. Review the GitHub Actions results and the
-submission metadata before uploading to CTAN.
+The source is published at https://github.com/Aqsa48/seasonsletters.
+No CTAN submission has been sent. The submission metadata is in CTAN-SUBMISSION.md.
