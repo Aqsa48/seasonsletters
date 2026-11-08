@@ -48,7 +48,7 @@ in the source repository.
 ## Links
 
 Repository: https://github.com/Aqsa48/seasonsletters
-Home page: https://github.com/Aqsa48/seasonsletters
+Home page: https://aqsa48.github.io/seasonsletters/
 Bug tracker: https://github.com/Aqsa48/seasonsletters/issues
 
 ## Before submitting
