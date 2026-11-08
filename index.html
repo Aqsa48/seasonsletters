@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Illustrated stationery for LaTeX. See the seasonal designs and compile your first letter."><title>Seasonal Letters — Stationery for LaTeX</title><link rel="stylesheet" href="docs/style.css"></head><body><header class="wrap"><a class="brand" href="#">✦ Seasonal Letters</a><nav aria-label="Main"><a href="#gallery">Gallery</a><a href="#start">Quick start</a><a href="https://github.com/Aqsa48/seasonsletters">GitHub ↗</a></nav></header><main>
+<section class="hero wrap"><div><p class="eyebrow">LATEX STATIONERY · VERSION 0.1.0</p><h1>Letters for<br>every season.</h1><p class="intro">Write your letter once. Change the season, weekday emblem or paper style with a few LaTeX options.</p><div class="actions"><a class="button" href="#start">Make your first letter</a><a href="docs/gallery.pdf">Open the PDF gallery ↗</a></div></div><figure><img src="docs/spring.png" alt="Spring letter on ivory paper with rose motifs and a crescent emblem"><figcaption>Spring · Monday · compiled LaTeX example</figcaption></figure></section>
+<section class="gallery" id="gallery"><div class="wrap"><p class="eyebrow">THE SAMPLE BOOK</p><h2>Four seasons, seven weekday emblems</h2><p>Combine any season and weekday for 28 designs. Choose plain, ruled or grid paper separately.</p><a href="docs/gallery.pdf"><img class="board" src="docs/gallery.png" alt="Seven compiled examples showing spring, summer, autumn and winter stationery"></a><a href="docs/gallery.pdf">View the full-size examples ↗</a></div></section>
+<section class="wrap start" id="start"><p class="eyebrow">QUICK START</p><h2>From LaTeX source to a letter</h2><ol><li><strong>Get the files.</strong> Download the package ZIP, unzip it, and put <code>seasonalletter.cls</code> and <code>seasonalletters.sty</code> beside your <code>letter.tex</code>.</li><li><strong>Choose a design.</strong> Change the options in <code>\SeasonalSetup</code>. The season sets the palette and corner motif. The weekday selects the emblem.</li><li><strong>Compile.</strong> Run pdfLaTeX, XeLaTeX or LuaLaTeX twice so the page decorations settle into position.</li></ol><div class="code"><div class="codebar"><span>letter.tex</span><button id="copy" type="button" hidden>Copy code</button><span id="status" role="status"></span></div><pre><code id="example">\documentclass[a4paper]{seasonalletter}
+\SeasonalSetup{season=autumn,weekday=wednesday,paper=grid}
+
+\begin{document}
+\begin{SeasonalLetter}
+\SeasonalHeading{From the reading room}
+\SeasonalOpening{Dear friend,}
+
+There is always a little room in the day for a letter.
+
+\SeasonalClosing{With warm wishes,}{Alex}
+\end{SeasonalLetter}
+\end{document}</code></pre></div><div class="notes"><p><strong>Long letters.</strong> Text flows across pages. The first page gets the full design and later pages use lighter decoration by default.</p><p><strong>Printing.</strong> Add <code>output=print</code> to use white paper and grey ornaments. The package omits ruling and background images in this mode.</p></div><div class="actions"><a class="button" href="docs/seasonalletters-0.1.0.zip" download>Download package ZIP</a><a href="docs/manual.pdf">Read the manual ↗</a></div></section>
+</main><footer class="wrap"><span>Seasonal Letters · by aqsa · MIT licence</span><a href="https://github.com/Aqsa48/seasonsletters">Source and issues ↗</a></footer><script src="docs/main.js"></script></body></html>
