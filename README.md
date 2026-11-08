@@ -2,6 +2,8 @@
 
 Configurable decorative stationery for LaTeX, by aqsa.
 
+[Visit the website, gallery and quick-start guide](https://aqsa48.github.io/seasonsletters/)
+
 ![Seven designs rendered by LaTeX](preview.png)
 
 Seasonal Letters keeps letter content separate from page decoration. Combine
