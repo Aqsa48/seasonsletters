@@ -1,0 +1,1 @@
+const button=document.querySelector('#copy');if(navigator.clipboard){button.hidden=false;button.addEventListener('click',async()=>{const status=document.querySelector('#status');try{await navigator.clipboard.writeText(document.querySelector('#example').textContent);status.textContent='Copied';}catch{status.textContent='Select the code to copy it.';}});}
